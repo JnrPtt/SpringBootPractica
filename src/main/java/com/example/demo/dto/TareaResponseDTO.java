@@ -1,29 +1,25 @@
-package com.example.demo.model;
+package com.example.demo.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+public class TareaResponseDTO {
 
-@Entity
-public class Tarea {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "El titulo es obligatorio")
     private String titulo;
-
     private String descripcion;
 
-    public Tarea() {}
+    public TareaResponseDTO() {}
 
-    public Tarea(String titulo, String descripcion) {
+    public TareaResponseDTO(Long id, String titulo, String descripcion) {
+        this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitulo() {

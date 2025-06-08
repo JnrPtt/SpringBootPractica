@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Tarea;
-import com.example.demo.repository.TareaRepository;
+import com.example.demo.dto.TareaRequestDTO;
+import com.example.demo.dto.TareaResponseDTO;
+import com.example.demo.service.TareaService;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -10,35 +12,29 @@ import java.util.List;
 @RequestMapping("/api/tareas")
 public class TareaController {
 
-    private final TareaRepository tareaRepository;
+    private final TareaService tareaService;
 
-    public TareaController(TareaRepository tareaRepository) {
-        this.tareaRepository = tareaRepository;
+    public TareaController(TareaService tareaService) {
+        this.tareaService = tareaService;
     }
 
     @GetMapping
-    public List<Tarea> obtenerTareas() {
-        return tareaRepository.findAll();
+    public List<TareaResponseDTO> obtenerTareas() {
+        return tareaService.obtenerTareas();
     }
 
     @PostMapping
-    public Tarea crearTarea(@RequestBody Tarea tarea) {
-        return tareaRepository.save(tarea);
+    public TareaResponseDTO crearTarea(@Valid @RequestBody TareaRequestDTO tareaRequest) {
+        return tareaService.crearTarea(tareaRequest);
     }
 
     @PutMapping("/{id}")
-    public Tarea actualizarTarea(@PathVariable Long id, @RequestBody Tarea tareaActualizada) {
-        return tareaRepository.findById(id)
-                .map(tarea -> {
-                    tarea.setTitulo(tareaActualizada.getTitulo());
-                    tarea.setDescripcion(tareaActualizada.getDescripcion());
-                    return tareaRepository.save(tarea);
-                })
-                .orElseThrow(() -> new RuntimeException("Tarea no encontrada con id: " + id));
+    public TareaResponseDTO actualizarTarea(@PathVariable Long id, @Valid @RequestBody TareaRequestDTO tareaRequest) {
+        return tareaService.actualizarTarea(id, tareaRequest);
     }
 
     @DeleteMapping("/{id}")
     public void eliminarTarea(@PathVariable Long id) {
-        tareaRepository.deleteById(id);
+        tareaService.eliminarTarea(id);
     }
 }
